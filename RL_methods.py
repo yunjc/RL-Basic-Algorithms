@@ -41,7 +41,7 @@ class Q_learning_agent(RL_agent):
         self.gamma = 0.95 # discount factor
         self.epsilon = 0.1 # epsilon-greedy
         self.action_taken_times = {goal_pos: np.array([1,1])} # UCB1
-        self.ucbalpha = 1 # UCB1
+        self.ucbalpha = 4 # UCB1
         
     def discretize_observation(self, observation):
         discrete_obs = observation / self.delta_state
@@ -102,9 +102,9 @@ class Sarsa_agent(RL_agent):
 
         self.alpha = 0.8  # step size or learning rate
         self.gamma = 0.95  # discount factor
-        self.epsilon = 0.1  # epsilon-greedy
+        self.epsilon = 0.1 # epsilon-greedy
         self.action_taken_times = {goal_pos: np.array([1,1])} # UCB1
-        self.ucbalpha = 1 # UCB1
+        self.ucbalpha = 4 # UCB1
 
     def discretize_observation(self, observation):
         discrete_obs = observation / self.delta_state
@@ -134,8 +134,8 @@ class Sarsa_agent(RL_agent):
             return action
 
     def learn(self, rho_state, rho_action_reward, step_size, iter):
-        if iter > 15000:
-            self.epsilon = 0.1 / (iter - 15000) # epsilon decay
+        if iter > 5000:
+            self.epsilon = 0.1 / (iter - 5000) # epsilon decay
         for t in range(len(rho_action_reward)-1):
             # get state & action pair
             state = rho_state[t]
@@ -170,9 +170,9 @@ class MC_agent(RL_agent):
 
         self.alpha = 0.8  # step size or learning rate
         self.gamma = 1  # discount factor
-        self.epsilon = 0.3  # epsilon-greedy
+        self.epsilon = 0.1 # epsilon-greedy
         self.action_taken_times = {goal_pos: np.array([1,1])} # UCB1
-        self.ucbalpha = 10 # UCB1
+        self.ucbalpha = 4 # UCB1
 
     def discretize_observation(self, observation):
         discrete_obs = observation / self.delta_state
@@ -204,7 +204,7 @@ class MC_agent(RL_agent):
 
     def learn(self, rho_state, rho_action_reward, step_size , iter):
         if iter > 5000:
-            self.epsilon = 0.3 / (iter - 5000) # epsilon decay
+            self.epsilon = 0.1 / (iter - 5000) # epsilon decay
         closed_set = []  # to tell first visit
         for t in range(len(rho_action_reward)):
             # get state & action pair
@@ -251,7 +251,7 @@ def epsilon_greedy(ValueTable, observation, epsilon):
         action = np.argmax(ValueTable[observation])
     return action
 
-def UCB1(ValueTable, action_times_table, observation, ucbalpha = 1):
+def UCB1(ValueTable, action_times_table, observation, ucbalpha = 4):
     values = ValueTable[observation]
     action_times = action_times_table[observation]
     total_times = np.sum(action_times)
@@ -259,7 +259,6 @@ def UCB1(ValueTable, action_times_table, observation, ucbalpha = 1):
     action_chosen = np.argmax(ucbs)
     action_times_table[observation][action_chosen] += 1
     return action_chosen, action_times_table
-
 
 
 

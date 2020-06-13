@@ -7,7 +7,7 @@ def Q_learning_agent_solve(env, total_episode, EE_method = "epsilon-greedy"):
     print('Q-learning agent solve Cartpole problem. Total episodes: {}, EE_method: {}'.format(total_episode, EE_method))
 
     agent = Q_learning_agent(env)
-    agent.ucbalpha = 50
+    # agent.ucbalpha = 50
     plot_rewards_stat = []
 
     for i_episode in range(total_episode):
@@ -169,7 +169,7 @@ def MC_agent_solve(env, total_episode, EE_method):
     for i_episode in range(total_episode):
         rho_state, rho_action_reward = generate_episode(env, agent, EE_method)
         if i_episode < 5000:
-             agent.learn(rho_state, rho_action_reward, 0.8, i_episode)
+             agent.learn(rho_state, rho_action_reward, 0.3, i_episode)
         else:
             # agent.epsilon = 0.1 / (iter - 15000+1)
             agent.learn(rho_state, rho_action_reward, 0.5*(1 - i_episode/total_episode), i_episode)
@@ -243,15 +243,21 @@ if __name__ == '__main__':
     
     env = gym.make('CartPole-v1')
     total_episode = 20001
-    # "epsilon-greedy" /"UCB1" / "greedy"
+    
+    # "epsilon-greedy" /"UCB1"
     EE_method = "epsilon-greedy"
     # EE_method = "UCB1"
 
-    Q_learning_agent, plot_rewards_stat = Q_learning_agent_solve(env, total_episode, EE_method)
+    # Q_learning_agent, plot_rewards_stat = Q_learning_agent_solve(env, total_episode, EE_method)
+    # # np.save('./result/Q learning e=0.1.npy', plot_rewards_stat)
+    # print(plot_rewards_stat)
 
-    # Sarsa_agent, plot_rewards_stat = Sarsa_agent_solve(env,total_episode, EE_method)
-
-    # MC_agent, plot_rewards_stat = MC_agent_solve(env, total_episode, EE_method)
-
+    Sarsa_agent, plot_rewards_stat = Sarsa_agent_solve(env,total_episode, EE_method)
+    # np.save('./result/sarsa e=0.1.npy', plot_rewards_stat)
     print(plot_rewards_stat)
+    
+    MC_agent, plot_rewards_stat = MC_agent_solve(env, total_episode, EE_method)
+    # np.save('./result/MC e=0.1.npy', plot_rewards_stat)
+    print(plot_rewards_stat)
+
     print('Solution Ends.')
